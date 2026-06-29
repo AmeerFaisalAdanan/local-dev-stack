@@ -1,4 +1,4 @@
-# Local Dev Stacl
+# Local Dev Stack
 
 A containerized local development stack — fully dockerized, modular, and always ready.
 
