@@ -1,6 +1,6 @@
-# backend-stack
+# Local Dev Stacl
 
-A Laragon-inspired local development stack — fully dockerized, modular, and always ready.
+A containerized local development stack — fully dockerized, modular, and always ready.
 
 Each service lives in its own directory with an isolated Docker network, `.env` config, and a Prometheus exporter where applicable.
 
