@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis_node
+    # Pulls the password from your .env file, defaults to 'mypassword' if empty
+    command: redis-server --requirepass ${REDIS_PASSWORD:-mypassword}
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+    networks:
+      - cache-net
+
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: redis_insight
+    ports:
+      - "5540:5540" # Access the Redis Insight Web UI at http://localhost:5540
+    volumes:
+      - ./redisinsight-data:/data
+    networks:
+      - cache-net
+    depends_on:
+      - redis
+
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: redis_exporter
+    environment:
+      - REDIS_ADDR=redis://redis:6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-mypassword}
+    ports:
+      - "9121:9121" # Scrape endpoint for your Grafana/Prometheus stack
+    networks:
+      - cache-net
+    depends_on:
+      - redis
+
+networks:
+  cache-net:
+    driver: bridge

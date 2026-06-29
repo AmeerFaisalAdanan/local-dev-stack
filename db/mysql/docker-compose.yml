@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    env_file:
+      - .env
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db-data:/var/lib/mysql
+    networks:
+      - mysql-net
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: mysql_phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    env_file:
+      - .env
+    ports:
+      - "8088:80"
+    networks:
+      - mysql-net
+    depends_on:
+      - mysql
+
+  mysql-exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: mysql_exporter
+    environment:
+      DATA_SOURCE_NAME: "${MYSQL_USER}:${MYSQL_PASSWORD}@(mysql:3306)/${MYSQL_DATABASE}"
+    env_file:
+      - .env
+    ports:
+      - "9104:9104"
+    networks:
+      - mysql-net
+    depends_on:
+      - mysql
+
+networks:
+  mysql-net:
+    external: true

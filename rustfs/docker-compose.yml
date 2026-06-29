@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: rustfs_server
+    env_file:
+      - .env
+    environment:
+      - RUSTFS_MASTER_PASSWORD=${RUSTFS_PASSWORD:-rustfspass}
+      - RUST_LOG=info
+      - AWS_REGION=${AWS_REGION:-ap-southeast-1}
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    volumes:
+      - ./rustfs-data:/data
+    networks:
+      - store-net
+
+#  rustfs-exporter:
+#    image: rustfs/rustfs-exporter:latest
+#    container_name: rustfs_exporter
+#    environment:
+#      - RUSTFS_ADDR=http://rustfs:8080
+#      - RUSTFS_PASSWORD=${RUSTFS_PASSWORD:-rustfspass}
+#    ports:
+#      - "9400:9400"
+#    networks:
+#      - store-net
+#    depends_on:
+#      - rustfs
+
+networks:
+  store-net:
+    external: true
