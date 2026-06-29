@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   redis:
-    image: redis:7-alpine
+    image: redis:7.2.14-alpine
     container_name: redis_node
     # Pulls the password from your .env file, defaults to 'mypassword' if empty
     command: redis-server --requirepass ${REDIS_PASSWORD:-mypassword}
@@ -14,7 +14,7 @@ services:
       - cache-net
 
   redis-insight:
-    image: redis/redisinsight:latest
+    image: redis/redisinsight:3.6.0
     container_name: redis_insight
     ports:
       - "5540:5540" # Access the Redis Insight Web UI at http://localhost:5540
@@ -26,7 +26,7 @@ services:
       - redis
 
   redis-exporter:
-    image: oliver006/redis_exporter:latest
+    image: oliver006/redis_exporter:v1.86.0
     container_name: redis_exporter
     environment:
       - REDIS_ADDR=redis://redis:6379
