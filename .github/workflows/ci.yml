@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-compose:
+    name: Validate Docker Compose
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy env templates
+        run: |
+          cp db/postgres/.env.example db/postgres/.env
+          cp db/mysql/.env.example     db/mysql/.env
+          cp redis/.env.example        redis/.env
+          cp rustfs/.env.example       rustfs/.env
+
+      - name: Validate compose files
+        run: |
+          docker compose -f db/postgres/docker-compose.yml config --quiet
+          docker compose -f db/mysql/docker-compose.yml    config --quiet
+          docker compose -f redis/docker-compose.yml       config --quiet
+          docker compose -f rustfs/docker-compose.yml      config --quiet
+
+  shellcheck:
+    name: Lint Bash Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: '.'
+          severity: warning
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trivy config scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: config
+          scan-ref: .
+          exit-code: '1'
+          severity: HIGH,CRITICAL
