@@ -1,5 +1,8 @@
 # Local Dev Stack
 
+[![CI](https://github.com/AmeerFaisalAdanan/local-dev-stack/actions/workflows/ci.yml/badge.svg)](https://github.com/AmeerFaisalAdanan/local-dev-stack/actions/workflows/ci.yml)
+[![Release](https://github.com/AmeerFaisalAdanan/local-dev-stack/actions/workflows/release.yml/badge.svg)](https://github.com/AmeerFaisalAdanan/local-dev-stack/actions/workflows/release.yml)
+
 A containerized local development stack — fully dockerized, modular, and always ready.
 
 Each service lives in its own directory with an isolated Docker network, `.env` config, and a Prometheus exporter where applicable.
