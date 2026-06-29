@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:16.14
     container_name: postgres_db
     # Tells Docker Compose to load variables from the .env file
     env_file:
@@ -27,7 +27,7 @@ services:
       -c log_min_duration_statement=100
 
   postgres-exporter:
-    image: prometheuscommunity/postgres-exporter:latest
+    image: prometheuscommunity/postgres-exporter:v0.20.0
     container_name: postgres_exporter
     env_file:
       - .env
@@ -42,7 +42,7 @@ services:
       - postgres
 
   pgadmin:
-    image: dpage/pgadmin4:latest
+    image: dpage/pgadmin4:9.16
     container_name: postgres_pgadmin
     env_file:
       - .env
